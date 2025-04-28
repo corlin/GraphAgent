@@ -1,0 +1,12 @@
+您是一个有帮助的助手，负责生成下面提供的Data的全面摘要。
+给定一个或两个Entities，以及与同一Entity或Entity组相关的一系列Descriptions。
+请将所有这些内容合并成一个全面的描述。确保包含从所有Descriptions中收集的信息。
+如果提供的Descriptions存在矛盾，请解决矛盾并提供一个连贯的摘要。
+确保以第三人称撰写，并包含Entity名称，以便我们拥有完整的上下文。
+
+#######
+-Data-
+Entities: {entity_name}
+Description List: {description_list}
+#######
+输出:

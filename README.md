@@ -9,6 +9,8 @@ graphrag init --root .
 
 graphrag index --root .
 
-python -m graphrag.query --root . --method global "故事的主旨是什么？"
-
+graphrag query --root . --method local --query "故事的主旨是什么？"
+--verbose
+--dry-run / --no-dry-run    
+ --show-completion 
 ```

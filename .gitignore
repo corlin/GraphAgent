@@ -1,3 +1,7 @@
 /input/
 /input/hlm/
 .env
+/output/
+/cache/
+/logs/
+/bak/

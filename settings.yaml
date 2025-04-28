@@ -96,22 +96,22 @@ update_index_storage:
 skip_workflows: []
 
 entity_extraction:
-  prompt: "prompts/entity_extraction.txt"
+  prompt: "prompts/cn/entity_extraction.txt"
   entity_types: [organization,person,geo,event]
   max_gleanings: 1
 
 summarize_descriptions:
-  prompt: "prompts/summarize_descriptions.txt"
+  prompt: "prompts/cn/summarize_descriptions.txt"
   max_length: 500
 
 claim_extraction:
   enabled: false
-  prompt: "prompts/claim_extraction.txt"
+  prompt: "prompts/cn/claim_extraction.txt"
   description: "Any claims or facts that could be relevant to information discovery."
   max_gleanings: 1
 
 community_reports:
-  prompt: "prompts/community_report.txt"
+  prompt: "prompts/cn/community_report.txt"
   max_length: 2000
   max_input_length: 8000
 
@@ -134,16 +134,16 @@ snapshots:
 ## See the config docs: https://microsoft.github.io/graphrag/config/yaml/#query
 
 local_search:
-  prompt: "prompts/local_search_system_prompt.txt"
+  prompt: "prompts/cn/local_search_system_prompt.txt"
 
 global_search:
-  map_prompt: "prompts/global_search_map_system_prompt.txt"
-  reduce_prompt: "prompts/global_search_reduce_system_prompt.txt"
-  knowledge_prompt: "prompts/global_search_knowledge_system_prompt.txt"
+  map_prompt: "prompts/cn/global_search_map_system_prompt.txt"
+  reduce_prompt: "prompts/cn/global_search_reduce_system_prompt.txt"
+  knowledge_prompt: "prompts/cn/global_search_knowledge_system_prompt.txt"
 
 drift_search:
-  prompt: "prompts/drift_search_system_prompt.txt"
-  reduce_prompt: "prompts/drift_search_reduce_prompt.txt"
+  prompt: "prompts/cn/drift_search_system_prompt.txt"
+  reduce_prompt: "prompts/cn/drift_search_reduce_prompt.txt"
 
 basic_search:
-  prompt: "prompts/basic_search_system_prompt.txt"
+  prompt: "prompts/cn/basic_search_system_prompt.txt"

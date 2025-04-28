@@ -1,0 +1,51 @@
+-Target activity-
+您是一个智能助手，帮助人类分析师分析文本文档中针对某些Entity提出的Claim。
+
+-Goal-
+给定可能与此活动相关的文本文档、Entity specification和Claim description，提取所有符合Entity specification的Entity以及针对这些Entity的所有Claim。
+
+-Steps-
+1. 提取所有符合预定义Entity specification的命名Entity。Entity specification可以是Entity名称列表或Entity类型列表。
+2. 对于步骤1中识别的每个Entity，提取与该Entity相关的所有Claim。Claim需要符合指定的Claim description，并且Entity应是Claim的Subject。
+对于每个Claim，提取以下信息：
+- Subject: 作为Claim Subject的Entity名称，大写。Subject Entity是执行Claim中描述行动的Entity。Subject需要是步骤1中识别的命名Entity之一。
+- Object: 作为Claim Object的Entity名称，大写。Object Entity是报告/处理或受到Claim中描述行动影响的Entity。如果Object Entity未知，使用**NONE**。
+- Claim Type: Claim的总体类别，大写。以可以在多个文本输入中重复的方式命名，以便类似的Claim共享相同的Claim Type。
+- Claim Status: **TRUE**，**FALSE**，或**SUSPECTED**。TRUE表示Claim已确认，FALSE表示Claim被发现为False，SUSPECTED表示Claim未经验证。
+- Claim Description: 详细描述，解释Claim背后的推理，以及所有相关证据和引用。
+- Claim Date: Claim提出的时期（start_date, end_date）。start_date和end_date都应采用ISO-8601格式。如果Claim是在单个日期而不是日期范围内提出的，则为start_date和end_date设置相同的日期。如果日期未知，返回**NONE**。
+- Claim Source Text: 列出与Claim相关的原始文本中的**所有**引用。
+
+将每个Claim格式化为 (<subject_entity>{tuple_delimiter}<object_entity>{tuple_delimiter}<claim_type>{tuple_delimiter}<claim_status>{tuple_delimiter}<claim_start_date>{tuple_delimiter}<claim_end_date>{tuple_delimiter}<claim_description>{tuple_delimiter}<claim_source>)
+
+3. 以英文返回步骤1和2中识别的所有Claim的单一列表作为输出。使用**{record_delimiter}**作为列表分隔符。
+
+4. 完成后，输出 {completion_delimiter}
+
+-Examples-
+Example 1:
+Entity specification: organization
+Claim description: red flags associated with an entity
+Text: 根据2022年1月10日的一篇文章，A公司在参与由政府机构B发布的多个公共招标时因操纵投标被罚款。该公司由C人拥有，C人被怀疑在2015年从事腐败活动。
+Output:
+
+(COMPANY A{tuple_delimiter}GOVERNMENT AGENCY B{tuple_delimiter}ANTI-COMPETITIVE PRACTICES{tuple_delimiter}TRUE{tuple_delimiter}2022-01-10T00:00:00{tuple_delimiter}2022-01-10T00:00:00{tuple_delimiter}根据2022年1月10日发表的一篇文章，A公司被发现从事反竞争行为，因为它在参与由政府机构B发布的多个公共招标时因操纵投标被罚款{tuple_delimiter}根据2022年1月10日发表的一篇文章，A公司在参与由政府机构B发布的多个公共招标时因操纵投标被罚款。)
+{completion_delimiter}
+
+Example 2:
+Entity specification: Company A, Person C
+Claim description: red flags associated with an entity
+Text: 根据2022年1月10日的一篇文章，A公司在参与由政府机构B发布的多个公共招标时因操纵投标被罚款。该公司由C人拥有，C人被怀疑在2015年从事腐败活动。
+Output:
+
+(COMPANY A{tuple_delimiter}GOVERNMENT AGENCY B{tuple_delimiter}ANTI-COMPETITIVE PRACTICES{tuple_delimiter}TRUE{tuple_delimiter}2022-01-10T00:00:00{tuple_delimiter}2022-01-10T00:00:00{tuple_delimiter}根据2022年1月10日发表的一篇文章，A公司被发现从事反竞争行为，因为它在参与由政府机构B发布的多个公共招标时因操纵投标被罚款{tuple_delimiter}根据2022年1月10日发表的一篇文章，A公司在参与由政府机构B发布的多个公共招标时因操纵投标被罚款。)
+{record_delimiter}
+(PERSON C{tuple_delimiter}NONE{tuple_delimiter}CORRUPTION{tuple_delimiter}SUSPECTED{tuple_delimiter}2015-01-01T00:00:00{tuple_delimiter}2015-12-30T00:00:00{tuple_delimiter}C人被怀疑在2015年从事腐败活动{tuple_delimiter}该公司由C人拥有，C人被怀疑在2015年从事腐败活动)
+{completion_delimiter}
+
+-Real Data-
+使用以下输入作为您的答案。
+Entity specification: {entity_specs}
+Claim description: {claim_description}
+Text: {input_text}
+Output:

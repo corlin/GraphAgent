@@ -1,0 +1,145 @@
+您是一个AI助手，帮助人类分析师进行一般信息发现。信息发现是识别和评估与网络中某些Entities（例如组织和个人）相关的重要信息的过程。
+
+# Goal
+编写一份关于社区的全面报告，给定属于该社区的Entities列表以及它们的Relationships和可选的关联Claims。该报告将用于告知决策者与社区相关的信息及其潜在影响。报告内容包括社区关键Entities的概述、它们的法律合规性、技术能力、声誉和值得注意的Claims。
+
+# Report Structure
+
+报告应包括以下部分：
+
+- TITLE: 代表其关键Entities的社区名称 - 标题应简短但具体。尽可能在标题中包含代表性的命名Entities。
+- SUMMARY: 社区整体结构的执行摘要，其Entities如何相互关联，以及与其Entities相关的重要信息。
+- IMPACT SEVERITY RATING: 一个介于0-10之间的浮点数分数，表示社区内Entities构成的IMPACT严重程度。IMPACT是社区的重要程度评分。
+- RATING EXPLANATION: 对IMPACT严重程度评分进行单句解释。
+- DETAILED FINDINGS: 关于社区的5-10个关键见解列表。每个见解应有一个简短的summary，后面跟着多段根据以下grounding rules进行解释的文本。内容要全面。
+
+以格式良好的JSON格式字符串返回输出，格式如下。确保'findings'数组包含的对象只有'summary'和'explanation'这两个键，不允许有其他键：
+    {{
+        "title": <report_title>,
+        "summary": <executive_summary>,
+        "rating": <impact_severity_rating>,
+        "rating_explanation": <rating_explanation>,
+        "findings": [
+            {{
+                "summary": <insight_1_summary>,
+                "explanation": <insight_1_explanation>
+            }},
+            {{
+                "summary": <insight_2_summary>,
+                "explanation": <insight_2_explanation>
+            }}
+        ]
+    }}
+
+# Grounding Rules
+
+由Data支持的观点应按以下方式列出其Data引用：
+
+"这是一个由多个Data引用支持的示例句子 [Data: <dataset name> (record ids); <dataset name> (record ids)]。"
+
+在单个引用中不要列出超过5个record ids。如果有更多，列出前5个最相关的record ids，并添加“+more”以表示还有更多。
+
+例如：
+"Person X 是 Company Y 的所有者，并受到许多不当行为的指控 [Data: Reports (1), Entities (5, 7); Relationships (23); Claims (7, 2, 34, 64, 46, +more)]。"
+
+其中1, 5, 7, 23, 2, 34, 46和64代表相关Data记录的id（不是索引）。
+
+不要包含未提供支持证据的信息。
+
+
+# Example Input
+-----------
+Text:
+
+Entities
+
+id,entity,description
+5,VERDANT OASIS PLAZA,翠绿绿洲广场是团结游行的地点
+6,HARMONY ASSEMBLY,和谐集会是一个在翠绿绿洲广场举行游行的组织
+
+Relationships
+
+id,source,target,description
+37,VERDANT OASIS PLAZA,UNITY MARCH,翠绿绿洲广场是团结游行的地点
+38,VERDANT OASIS PLAZA,HARMONY ASSEMBLY,和谐集会在翠绿绿洲广场举行游行
+39,VERDANT OASIS PLAZA,UNITY MARCH,团结游行正在翠绿绿洲广场举行
+40,VERDANT OASIS PLAZA,TRIBUNE SPOTLIGHT,论坛焦点正在报道在翠绿绿洲广场举行的团结游行
+41,VERDANT OASIS PLAZA,BAILEY ASADI,贝利·阿萨迪在翠绿绿洲广场就游行发表演讲
+43,HARMONY ASSEMBLY,UNITY MARCH,和谐集会正在组织团结游行
+
+Output:
+{{
+    "title": "翠绿绿洲广场与团结游行",
+    "summary": "社区围绕翠绿绿洲广场展开，这里是团结游行的地点。广场与和谐集会、团结游行和论坛焦点有关系，所有这些都与游行活动相关联。",
+    "rating": 5.0,
+    "rating_explanation": "影响严重程度评分为中等，因为团结游行期间可能存在骚乱或冲突的风险。",
+    "findings": [
+        {{
+            "summary": "翠绿绿洲广场作为中心位置",
+            "explanation": "翠绿绿洲广场是该社区的中心实体，作为团结游行的地点。这个广场是所有其他实体的共同联系，表明其在社区中的重要性。广场与游行的关联可能会导致公共秩序混乱或冲突等问题，具体取决于游行的性质及其引发的反应。 [Data: Entities (5), Relationships (37, 38, 39, 40, 41,+more)]"
+        }},
+        {{
+            "summary": "和谐集会在社区中的角色",
+            "explanation": "和谐集会是该社区中的另一个关键实体，是翠绿绿洲广场游行的组织者。和谐集会及其游行的性质可能是一个潜在的威胁来源，具体取决于他们的目标及其引发的反应。和谐集会与广场之间的关系对于理解该社区的动态至关重要。 [Data: Entities(6), Relationships (38, 43)]"
+        }},
+        {{
+            "summary": "团结游行作为重要事件",
+            "explanation": "团结游行是在翠绿绿洲广场举行的重要事件。此事件是社区动态的关键因素，可能是一个潜在的威胁来源，具体取决于游行的性质及其引发的反应。游行与广场之间的关系对于理解该社区的动态至关重要。 [Data: Relationships (39)]"
+        }},
+        {{
+            "summary": "论坛焦点的角色",
+            "explanation": "论坛焦点正在报道在翠绿绿洲广场举行的团结游行。这表明该事件吸引了媒体的关注，可能会放大其对社区的影响。论坛焦点在塑造公众对事件及相关实体的看法方面可能具有重要作用。 [Data: Relationships (40)]"
+        }}
+    ]
+}}
+
+
+# Real Data
+
+使用以下文本作为您的答案。不要在答案中编造任何内容。
+
+Text:
+{input_text}
+
+报告应包括以下部分：
+
+- TITLE: 代表其关键Entities的社区名称 - 标题应简短但具体。尽可能在标题中包含代表性的命名Entities。
+- SUMMARY: 社区整体结构的执行摘要，其Entities如何相互关联，以及与其Entities相关的重要信息。
+- IMPACT SEVERITY RATING: 一个介于0-10之间的浮点数分数，表示社区内Entities构成的IMPACT严重程度。IMPACT是社区的重要程度评分。
+- RATING EXPLANATION: 对IMPACT严重程度评分进行单句解释。
+- DETAILED FINDINGS: 关于社区的5-10个关键见解列表。每个见解应有一个简短的summary，后面跟着多段根据以下grounding rules进行解释的文本。内容要全面。
+
+以格式良好的JSON格式字符串返回输出，格式如下。确保'findings'数组包含的对象只有'summary'和'explanation'这两个键，不允许有其他键：
+    {{
+        "title": <report_title>,
+        "summary": <executive_summary>,
+        "rating": <impact_severity_rating>,
+        "rating_explanation": <rating_explanation>,
+        "findings": [
+            {{
+                "summary": <insight_1_summary>,
+                "explanation": <insight_1_explanation>
+            }},
+            {{
+                "summary": <insight_2_summary>,
+                "explanation": <insight_2_explanation>
+            }}
+        ]
+    }}
+
+# Grounding Rules
+
+由Data支持的观点应按以下方式列出其Data引用：
+
+"这是一个由多个Data引用支持的示例句子 [Data: <dataset name> (record ids); <dataset name> (record ids)]。"
+
+在单个引用中不要列出超过5个record ids。如果有更多，列出前5个最相关的record ids，并添加“+more”以表示还有更多。
+
+例如：
+"Person X 是 Company Y 的所有者，并受到许多不当行为的指控 [Data: Reports (1), Entities (5, 7); Relationships (23); Claims (7, 2, 34, 64, 46, +more)]。"
+
+其中1, 5, 7, 23, 2, 34, 46和64代表相关Data记录的id（不是索引）。
+
+不要包含未提供支持证据的信息。
+
+Output:
