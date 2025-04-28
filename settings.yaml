@@ -10,21 +10,21 @@ models:
   default_chat_model:
     api_key: ${GRAPHRAG_API_KEY}
     type: openai_chat
-    model: qwen-plus
+    model: glm-4-plus
     model_supports_json: true
     api_base: ${GRAPHRAG_BASE_URL}
     encoding_model: cl100k_base
   default_embedding_model:
     api_key: ${GRAPHRAG_API_KEY}
     type: openai_embedding
-    model: text-embedding-v3
+    model: embedding-3
     api_base: ${GRAPHRAG_BASE_URL}
     encoding_model: cl100k_base
 
 llm:
   api_key: ${GRAPHRAG_API_KEY} # set this in the generated .env file
   type: openai_chat # or azure_openai_chat
-  model: qwen-plus
+  model: glm-4-plus
   model_supports_json: true # recommended if this is available for your model.
   # audience: "https://cognitiveservices.azure.com/.default"
   api_base: ${GRAPHRAG_BASE_URL}
@@ -48,7 +48,7 @@ embeddings:
   llm:
     api_key: ${GRAPHRAG_API_KEY}
     type: openai_embedding # or azure_openai_embedding
-    model: text-embedding-v3
+    model: embedding-3
     api_base: ${GRAPHRAG_BASE_URL}
     # api_version: 2024-02-15-preview
     # audience: "https://cognitiveservices.azure.com/.default"

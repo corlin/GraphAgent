@@ -9,7 +9,7 @@ graphrag init --root .
 
 graphrag index --root .
 
-graphrag query --root . --method local --query "故事的主旨是什么？"
+graphrag query --root . --method local --query "graphrag 测绘合同相关条款"
 --verbose
 --dry-run / --no-dry-run    
  --show-completion 
