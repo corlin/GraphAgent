@@ -58,6 +58,9 @@ graphrag query --root . --method local --query "描述故事梗概" --verbose --
 - **cache/**：用于存储缓存数据的目录。
 - **logs/**：存储日志文件的目录。
 - **prompts/**：包含用于实体提取、描述总结、社区报告和查询的自定义提示文件。
+- **chinesesplitting_patch/**：包含增强GraphRAG中文字符处理能力的补丁文件，避免CJK字符截断。
+  - **text_splitting.py**：实现了文本分割逻辑，特别针对中文文本使用`jieba`分词，确保在分割时不截断中文词语和句子。
+  - **tokens.py**：与文本分割相关的辅助文件。
 - **HLM_Downloader.py**：用于从网站下载《红楼梦》文本内容的脚本。
 - **settings.yaml**：GraphRAG 框架的配置文件，包含模型设置、输入设置、存储设置和工作流程设置等。
 
