@@ -247,8 +247,8 @@ def split_single_text_on_tokens(text: str, tokenizer: Tokenizer) -> list[str]:
 
 def _is_chinese_char(char: str) -> bool:
     """Check if a character is a Chinese character based on Unicode ranges."""
-    if not char or len(char) != 1:
-        return False
+    # if not char or len(char) != 1:
+    #     return False
     # Unicode ranges for Chinese characters
     # CJK Unified Ideographs: 4E00-9FFF
     # CJK Unified Ideographs Extension A: 3400-4DBF
